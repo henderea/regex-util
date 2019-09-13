@@ -93,6 +93,7 @@ const flatten = (array) => {
             rv.push(i);
         }
     });
+    return rv;
 };
 
 const doMultiReplace = (input, ...subs) => {
