@@ -1,6 +1,6 @@
 {
   "name": "@henderea/regex-util",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A utility library for @henderea/quick-regex and others",
   "main": "src/index.js",
   "types": "src/index.d.ts",
