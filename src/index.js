@@ -99,7 +99,7 @@ const flatten = (array) => {
 const doMultiReplace = (input, ...subs) => {
     let rv = input;
     flatten(subs).forEach(sub => {
-        rv = doReplace(rv, subs.matchRegex, subs.replaceString);
+        rv = doReplace(rv, sub.matchRegex, sub.replaceString);
     });
     return rv;
 };
