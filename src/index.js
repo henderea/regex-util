@@ -99,7 +99,21 @@ const flatten = (array) => {
 const doMultiReplace = (input, ...subs) => {
     let rv = input;
     flatten(subs).forEach(sub => {
-        rv = doReplace(rv, sub.matchRegex, sub.replaceString);
+        if(rv !== null) {
+            if(Object.keys(sub).includes('replaceString')) {
+                rv = doReplace(rv, sub.matchRegex, sub.replaceString);
+            } else if(Object.keys(sub).includes('invertGrep')) {
+                if(/\n/.test(rv)) {
+                    rv = rv.split(/\n/g).map(l => {
+                        let keep = sub.matchRegex.test(l) ? !sub.invertGrep : sub.invertGrep;
+                        return keep ? l : null;
+                    }).filter(l => l !== null).join('\n');
+                } else {
+                    let keep = sub.matchRegex.test(rv) ? !sub.invertGrep : sub.invertGrep;
+                    rv = keep ? rv : null;
+                }
+            }
+        }
     });
     return rv;
 };
