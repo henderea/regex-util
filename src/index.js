@@ -115,7 +115,6 @@ const doMultiReplace = (input, ...subs) => {
                     }).filter(l => l !== null).join('\n');
                 } else {
                     let keep = resetRegex(sub.matchRegex).test(rv) ? !sub.invertGrep : sub.invertGrep;
-                    console.log(rv, keep);
                     rv = keep ? rv : null;
                 }
             }
