@@ -1,7 +1,7 @@
 const XRegExp = require('xregexp/lib/xregexp');
 require('xregexp/lib/addons/matchrecursive')(XRegExp);
 
-const replaceRegex = XRegExp(`\\$\\{(?<index>\\d+)(?<otherIndexes>(?:\\|\\d+)+)?(?:(?<question>\\?)(?<whenVal>[^:}]*)(?::(?<elseVal>[^:}]*))?|(?:(?<colon>:)(?:(?<hyphen>-)(?<fallback>[^{}]+)|(?<subStart>\\d+)(?::(?<subLen>\\d+))?)))?}`, 'g')
+const replaceRegex = XRegExp(`\\$\\{(?<index>\\d+)(?<otherIndexes>(?:\\|\\d+)+)?(?<caseMod>(?:\\^{1,2}|,{1,2}))?(?:(?<question>\\?)(?<whenVal>[^:}]*)(?::(?<elseVal>[^:}]*))?|(?:(?<colon>:)(?:(?<hyphen>-)(?<fallback>[^{}]+)|(?<subStart>\\d+)(?::(?<subLen>\\d+))?)))?}`, 'g')
 
 const isNil = (arg) => arg === null || typeof arg === 'undefined';
 
@@ -9,6 +9,14 @@ const getMatches = (replaceString) => XRegExp.matchRecursive(replaceString, '\\$
     valueNames: ['between', 'left', 'match', 'right'],
     escapeChar: '\\'
 });
+
+const doCaseMod = (caseMod, str) => {
+    if(isNil(caseMod) || caseMod == '' || isNil(str) || str == '') { return str; }
+    if(caseMod == '^') { return `${str.slice(0, 1).toUpperCase()}${str.slice(1)}`; }
+    if(caseMod == ',') { return `${str.slice(0, 1).toLowerCase()}${str.slice(1)}`; }
+    if(caseMod == '^^') { return str.toUpperCase(); }
+    if(caseMod == ',,') { return str.toLowerCase(); }
+}
 
 const processReplace = (args, replaceString, left = null, right = null) => {
     if(!replaceString || replaceString.length == 0) {
@@ -19,7 +27,7 @@ const processReplace = (args, replaceString, left = null, right = null) => {
     if(matches.length <= 1) {
         if(left && right) {
             return XRegExp.replace(`${left}${replaceString}${right}`, replaceRegex, (match) => {
-                let { index, otherIndexes, question, whenVal, elseVal, colon, hyphen, fallback, subStart, subLen } = match;
+                let { index, otherIndexes, caseMod, question, whenVal, elseVal, colon, hyphen, fallback, subStart, subLen } = match;
                 if(index >= args.length - 2) {
                     return match;
                 }
@@ -34,20 +42,20 @@ const processReplace = (args, replaceString, left = null, right = null) => {
                     }
                 }
                 if(question == '?') {
-                    return !isNil(val) ? whenVal : (elseVal || '');
+                    return doCaseMod(caseMod, !isNil(val) ? whenVal : (elseVal || ''));
                 }
                 if(colon == ':') {
                     if(hyphen == '-') {
-                        return fallback || '';
+                        return doCaseMod(caseMod, fallback || '');
                     } else {
                         if(isNil(subLen)) {
-                            return val.slice(parseInt(subStart));
+                            return doCaseMod(caseMod, val.slice(parseInt(subStart)));
                         } else {
-                            return val.slice(parseInt(subStart), parseInt(subStart) + parseInt(subLen));
+                            return doCaseMod(caseMod, val.slice(parseInt(subStart), parseInt(subStart) + parseInt(subLen)));
                         }
                     }
                 }
-                return val || '';
+                return doCaseMod(caseMod, val || '');
             });
         } else {
             return replaceString;
