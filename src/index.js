@@ -18,6 +18,21 @@ const doCaseMod = (caseMod, str) => {
     if(caseMod == ',,') { return str.toLowerCase(); }
 }
 
+const getAt = (arr, ind) => {
+    if(!arr) { return undefined; }
+    if(ind < 0) { ind = arr.length + ind; }
+    return arr[ind];
+}
+
+const mapParams = (inds, func) => {
+    if(!inds && inds !== 0) { inds = []; }
+    if(!Array.isArray(inds)) { inds = [inds]; }
+    return (...args) => {
+        const params = inds.map(i => getAt(args, i));
+        return func(...params);
+    }
+}
+
 const processReplace = (args, replaceString, left = null, right = null) => {
     if(!replaceString || replaceString.length == 0) {
         return '';
@@ -26,8 +41,8 @@ const processReplace = (args, replaceString, left = null, right = null) => {
 
     if(matches.length <= 1) {
         if(left && right) {
-            return XRegExp.replace(`${left}${replaceString}${right}`, replaceRegex, (match) => {
-                let { index, otherIndexes, caseMod, question, whenVal, elseVal, colon, hyphen, fallback, subStart, subLen } = match;
+            return XRegExp.replace(`${left}${replaceString}${right}`, replaceRegex, mapParams([0, -1], (match, groups) => {
+                let { index, otherIndexes, caseMod, question, whenVal, elseVal, colon, hyphen, fallback, subStart, subLen } = groups;
                 if(index >= args.length - 2) {
                     return match;
                 }
@@ -56,7 +71,7 @@ const processReplace = (args, replaceString, left = null, right = null) => {
                     }
                 }
                 return doCaseMod(caseMod, val || '');
-            });
+            }));
         } else {
             return replaceString;
         }
