@@ -47,7 +47,6 @@ const processReplace = (args, replaceString, left = null, right = null) => {
                     return match;
                 }
                 let val = args[index];
-                console.log(groups, val);
                 if(!isNil(otherIndexes) && isNil(val)) {
                     let indexes = otherIndexes.split(/|/);
                     for(let i = 0; i < indexes.length && isNil(val); i++) {
