@@ -132,7 +132,7 @@ const doMultiReplace = (input, ...subs) => {
                 rv = doReplace(rv, resetRegex(sub.matchRegex), sub.replaceString);
             } else if(Object.keys(sub).includes('invertGrep')) {
                 if(/\n/.test(rv)) {
-                    rv = rv.split(/\n/g).map(l => {
+                    rv = rv.split(/\r?\n/g).map(l => {
                         let keep = resetRegex(sub.matchRegex).test(l) ? !sub.invertGrep : sub.invertGrep;
                         return keep ? l : null;
                     }).filter(l => l !== null).join('\n');
