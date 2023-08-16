@@ -11,6 +11,6 @@
     "src/**/*"
   ],
   "dependencies": {
-    "xregexp": "^5.0.1"
+    "xregexp": "^5.1.1"
   }
 }
