@@ -7,10 +7,25 @@
   "repository": "git@github.com:henderea/regex-util.git",
   "author": "Eric Henderson <henderea@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "lint": "eslint src",
+    "lint:fix": "eslint --fix src"
+  },
+  "dependencies": {
+    "xregexp": "^5.1.1"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.7.3",
+    "@typescript-eslint/parser": "^6.7.3",
+    "eslint": "^8.50.0",
+    "eslint-config-henderea": "1.1.16",
+    "eslint-plugin-import": "^2.28.1",
+    "typescript": "^5.2.2"
+  },
   "files": [
     "src/**/*"
   ],
-  "dependencies": {
-    "xregexp": "^5.1.1"
+  "eslintConfig": {
+    "extends": "henderea"
   }
 }

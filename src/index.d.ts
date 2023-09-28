@@ -3,7 +3,7 @@ declare namespace regexUtil {
         matchRegex: RegExp;
         replaceString: string;
     }
-    export type Many<T> = T | T[]
+    export type Many<T> = T | T[];
 }
 
 export const XRegExp: any;
