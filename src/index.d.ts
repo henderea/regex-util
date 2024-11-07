@@ -27,6 +27,10 @@ Replacement String:
             ${1,}       insert capture group 1, with the first character converted to lowercase
             ${1^^}      insert capture group 1, with the entire capture group converted to uppercase
             ${1,,}      insert capture group 1, with the entire capture group converted to lowercase
+            ${1^,}      insert capture group 1, with the first character converted to uppercase and the rest of the
+                        capture group converted to lowercase
+            ${1,^}      insert capture group 1, with the first character converted to lowercase and the rest of the
+                        capture group converted to uppercase
 
     Syntax notes:
         • You can nest a replacement string match group syntax in any constant.

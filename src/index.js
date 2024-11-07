@@ -1,7 +1,7 @@
 const XRegExp = require('xregexp/lib/xregexp');
 require('xregexp/lib/addons/matchrecursive')(XRegExp);
 
-const replaceRegex = XRegExp(`\\$\\{(?<index>\\d+)(?<otherIndexes>(?:\\|\\d+)+)?(?<caseMod>(?:\\^{1,2}|,{1,2}))?(?:(?<question>\\?)(?<whenVal>[^:}]*)(?::(?<elseVal>[^:}]*))?|(?:(?<colon>:)(?:(?<hyphen>-)(?<fallback>[^{}]+)|(?<subStart>\\d+)(?::(?<subLen>\\d+))?)))?}`, 'g');
+const replaceRegex = XRegExp(`\\$\\{(?<index>\\d+)(?<otherIndexes>(?:\\|\\d+)+)?(?<caseMod>(?:[,^]{1,2}))?(?:(?<question>\\?)(?<whenVal>[^:}]*)(?::(?<elseVal>[^:}]*))?|(?:(?<colon>:)(?:(?<hyphen>-)(?<fallback>[^{}]+)|(?<subStart>\\d+)(?::(?<subLen>\\d+))?)))?}`, 'g');
 
 const isNil = (arg) => arg === null || typeof arg === 'undefined';
 
@@ -14,6 +14,8 @@ const doCaseMod = (caseMod, str) => {
   if(isNil(caseMod) || caseMod == '' || isNil(str) || str == '') { return str; }
   if(caseMod == '^') { return `${str.slice(0, 1).toUpperCase()}${str.slice(1)}`; }
   if(caseMod == ',') { return `${str.slice(0, 1).toLowerCase()}${str.slice(1)}`; }
+  if(caseMod == '^,') { return `${str.slice(0, 1).toUpperCase()}${str.slice(1).toLowerCase()}`; }
+  if(caseMod == ',^') { return `${str.slice(0, 1).toLowerCase()}${str.slice(1).toUpperCase()}`; }
   if(caseMod == '^^') { return str.toUpperCase(); }
   if(caseMod == ',,') { return str.toLowerCase(); }
 };
