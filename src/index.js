@@ -1,7 +1,7 @@
 const XRegExp = require('xregexp/lib/xregexp');
 require('xregexp/lib/addons/matchrecursive')(XRegExp);
 
-const replaceRegex = XRegExp(`\\$\\{(?<index>\\d+)(?<otherIndexes>(?:\\|\\d+)+)?(?<caseMod>(?:[,^]{1,2}))?(?:(?<question>\\?)(?<whenVal>[^:}]*)(?::(?<elseVal>[^:}]*))?|(?:(?<colon>:)(?:(?<hyphen>-)(?<fallback>[^{}]+)|(?<subStart>\\d+)(?::(?<subLen>\\d+))?)))?}`, 'g');
+const replaceRegex = XRegExp(`\\$\\{(?<index>\\d+)(?<otherIndexes>(?:\\|\\d+)+)?(?<caseMod>(?:[,^]{1,2}[+-]?))?(?:(?<question>\\?)(?<whenVal>[^:}]*)(?::(?<elseVal>[^:}]*))?|(?:(?<colon>:)(?:(?<hyphen>-)(?<fallback>[^{}]+)|(?<subStart>\\d+)(?::(?<subLen>\\d+))?)))?}`, 'g');
 
 const isNil = (arg) => arg === null || typeof arg === 'undefined';
 
@@ -10,14 +10,22 @@ const getMatches = (replaceString) => XRegExp.matchRecursive(replaceString, '\\$
   escapeChar: '\\'
 });
 
+const doCaseModMod = (str, caseModMod, modFunc) => {
+  if(isNil(caseModMod) || caseModMod == '') { return modFunc(str); }
+  const pattern = caseModMod == '+' ? /(?<=^|\s)(\S+)(?=$|\s)/g : /(?<=^|\s)(\S+)(?=$|\s)/;
+  return str.replace(pattern, modFunc);
+};
+
 const doCaseMod = (caseMod, str) => {
   if(isNil(caseMod) || caseMod == '' || isNil(str) || str == '') { return str; }
-  if(caseMod == '^') { return `${str.slice(0, 1).toUpperCase()}${str.slice(1)}`; }
-  if(caseMod == ',') { return `${str.slice(0, 1).toLowerCase()}${str.slice(1)}`; }
-  if(caseMod == '^,') { return `${str.slice(0, 1).toUpperCase()}${str.slice(1).toLowerCase()}`; }
-  if(caseMod == ',^') { return `${str.slice(0, 1).toLowerCase()}${str.slice(1).toUpperCase()}`; }
-  if(caseMod == '^^') { return str.toUpperCase(); }
-  if(caseMod == ',,') { return str.toLowerCase(); }
+  const caseModMod = caseMod.replace(/^[^+-]+([+-]?)/, '$1');
+  caseMod = caseMod.replace(/[+-]$/, '');
+  if(caseMod == '^') { return doCaseModMod(str, caseModMod, (s) => `${s.slice(0, 1).toUpperCase()}${s.slice(1)}`); }
+  if(caseMod == ',') { return doCaseModMod(str, caseModMod, (s) => `${s.slice(0, 1).toLowerCase()}${s.slice(1)}`); }
+  if(caseMod == '^,') { return doCaseModMod(str, caseModMod, (s) => `${s.slice(0, 1).toUpperCase()}${s.slice(1).toLowerCase()}`); }
+  if(caseMod == ',^') { return doCaseModMod(str, caseModMod, (s) => `${s.slice(0, 1).toLowerCase()}${s.slice(1).toUpperCase()}`); }
+  if(caseMod == '^^') { return doCaseModMod(str, caseModMod, (s) => s.toUpperCase()); }
+  if(caseMod == ',,') { return doCaseModMod(str, caseModMod, (s) => s.toLowerCase()); }
 };
 
 const getAt = (arr, ind) => {

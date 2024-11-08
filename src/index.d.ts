@@ -31,11 +31,20 @@ Replacement String:
                         capture group converted to lowercase
             ${1,^}      insert capture group 1, with the first character converted to lowercase and the rest of the
                         capture group converted to uppercase
+            ${1^,+}     insert capture group 1, with the first character OF EACH WORD converted to uppercase and the
+                        rest OF EACH WORD converted to lowercase; the + modifier can be used on any case modification
+                        form, but cannot be combined with the - modifier
+            ${1^,-}     insert capture group 1, with the first character OF THE FIRST WORD converted to uppercase and
+                        the rest OF THE FIRST WORD converted to lowercase (the remainder of the capture group will be
+                        added un-altered); the - modifier can be used on any case modification form, but cannot be
+                        combined with the + modifier
 
     Syntax notes:
         • You can nest a replacement string match group syntax in any constant.
         • You can use the character case modification syntax with any other syntax setups. The case modification syntax goes
           immediately after the capture group number(s) from the basic syntax.
+        • The + and - character case modification syntax modifiers determine "words" by sections of non-whitespace separated by
+          whitespace. They will not alter the whitespace itself.
 
         Examples:
             ${1?${2}${3}}             insert capture group 2 if group 1 was matched, or group 3 if it didn't
