@@ -12,7 +12,7 @@
     "lint:fix": "eslint --fix src"
   },
   "dependencies": {
-    "xregexp": "^5.1.1"
+    "xregexp": "^5.1.2"
   },
   "devDependencies": {
     "@stylistic/eslint-plugin": "^5.9.0",
