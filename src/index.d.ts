@@ -59,9 +59,12 @@ Replacement String:
 */
 
 declare namespace regexUtil {
-    export interface SubstitutionEntity {
+    export type SubstitutionEntity = {
         matchRegex: RegExp;
         replaceString: string;
+    } | {
+        matchRegex: RegExp;
+        invertGrep: boolean;
     }
     export type Many<T> = T | T[];
 }
