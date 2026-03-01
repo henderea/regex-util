@@ -65,7 +65,7 @@ declare namespace regexUtil {
     } | {
         matchRegex: RegExp;
         invertGrep: boolean;
-    }
+    };
     export type Many<T> = T | T[];
 }
 

@@ -47,20 +47,20 @@ const processReplace = (args, replaceString, left = null, right = null) => {
   if(!replaceString || replaceString.length == 0) {
     return '';
   }
-  let matches = getMatches(replaceString);
+  const matches = getMatches(replaceString);
 
   if(matches.length <= 1) {
     if(left && right) {
       return XRegExp.replace(`${left}${replaceString}${right}`, replaceRegex, mapParams([0, -1], (match, groups) => {
-        let { index, otherIndexes, caseMod, question, whenVal, elseVal, colon, hyphen, fallback, subStart, subLen } = groups;
+        const { index, otherIndexes, caseMod, question, whenVal, elseVal, colon, hyphen, fallback, subStart, subLen } = groups;
         if(index >= args.length - 2) {
           return match;
         }
         let val = args[index];
         if(!isNil(otherIndexes) && isNil(val)) {
-          let indexes = otherIndexes.split(/|/);
+          const indexes = otherIndexes.split(/|/);
           for(let i = 0; i < indexes.length && isNil(val); i++) {
-            let ind = indexes[i];
+            const ind = indexes[i];
             if(!isNil(ind) && ind.length > 0 && ind < args.length - 2) {
               val = args[ind];
             }
@@ -88,7 +88,7 @@ const processReplace = (args, replaceString, left = null, right = null) => {
   }
 
   let ind = 0;
-  let rv = [];
+  const rv = [];
   let match, l, m, r;
 
   while(ind < matches.length) {
@@ -116,7 +116,7 @@ const processReplace = (args, replaceString, left = null, right = null) => {
 const doReplace = (input, matchRegex, replaceString) => input.replace(matchRegex, (...args) => processReplace(args, replaceString));
 
 const flatten = (array) => {
-  let rv = [];
+  const rv = [];
   array.forEach((i) => {
     if(Array.isArray(i)) {
       i.forEach((j) => {
@@ -143,11 +143,11 @@ const doMultiReplace = (input, ...subs) => {
       } else if(Object.keys(sub).includes('invertGrep')) {
         if(/\n/.test(rv)) {
           rv = rv.split(/\r?\n/g).map((l) => {
-            let keep = resetRegex(sub.matchRegex).test(l) ? !sub.invertGrep : sub.invertGrep;
+            const keep = resetRegex(sub.matchRegex).test(l) ? !sub.invertGrep : sub.invertGrep;
             return keep ? l : null;
           }).filter((l) => l !== null).join('\n');
         } else {
-          let keep = resetRegex(sub.matchRegex).test(rv) ? !sub.invertGrep : sub.invertGrep;
+          const keep = resetRegex(sub.matchRegex).test(rv) ? !sub.invertGrep : sub.invertGrep;
           rv = keep ? rv : null;
         }
       }
